@@ -1,0 +1,16 @@
+.imageFileInputLabel {
+  width: 281px;
+  height: 255px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  background-image: url("../../assets/select-img-background.png");
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+#file {
+  display: none;
+}
