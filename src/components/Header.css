@@ -1,0 +1,15 @@
+#headerContainer {
+  height: 90px;
+
+  line-height: 90px;
+  text-align: center;
+
+  padding: 0.75rem 0;
+
+  background: linear-gradient(#ffffff, #eef7ff);
+  box-shadow: 0 0.25rem 0.625rem 0 #efefef;
+}
+
+#logoImg {
+  vertical-align: middle;
+}

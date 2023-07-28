@@ -1,12 +1,48 @@
+.homeContainer {
+  display: flex;
+  justify-content: center;
+}
+
+.previewContainer {
+  position: relative;
+
+  margin-top: 1.875rem;
+}
+
+.previewImg {
+  width: 17.563rem;
+  height: 15.938rem;
+
+  border-radius: 0.625rem;
+  -moz-border-radius: 0.625rem;
+  -khtml-border-radius: 0.625rem;
+  -webkit-border-radius: 0.625rem;
+}
+
+.removeImgBtn {
+  position: absolute;
+  right: 0.375rem;
+  top: 0.375rem;
+
+  background: none;
+
+  width: 1.875rem;
+  height: 1.875rem;
+
+  background-image: url("../../assets/images/_x-button\ circle.svg");
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
 .imageFileInputLabel {
-  width: 281px;
-  height: 255px;
+  width: 17.563rem;
+  height: 15.938rem;
 
   display: flex;
   justify-content: center;
   align-items: center;
 
-  background-image: url("../../assets/select-img-background.png");
+  background-image: url("../../assets/images/select-img-background.png");
   background-repeat: no-repeat;
   background-size: cover;
 }
