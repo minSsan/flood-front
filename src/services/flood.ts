@@ -17,25 +17,18 @@ export const getFloodResult = async (
     console.log("Successfully loaded model");
 
     // * Image Processing
-    const imgTensor = tf.browser
-      // @ts-ignore
-      .fromPixels(imageElement, 3)
-      .toFloat();
+    const imgTensor = tf.browser.fromPixels(imageElement, 3).toFloat();
     const resizedImg = tf.image.resizeNearestNeighbor(imgTensor, [224, 224]);
     const expandedImg = tf.expandDims(resizedImg, 0);
 
     // * Model Execution
-    // @ts-ignore
     const output = model.execute(expandedImg);
 
     // * Model Result
-    // @ts-ignore
-    const predictions = tf.argMax(output, 1);
+    const predictions = tf.argMax(output as tf.Tensor<tf.Rank>, 1); // TODO: type
     const maxIndex = predictions.dataSync()[0];
-    console.log("result index:", maxIndex);
 
-    //@ts-ignore
-    const result = flood_level_dict[maxIndex];
+    const result = flood_level_dict[maxIndex as 0 | 1 | 2 | 3];
 
     return result;
   } catch (error) {

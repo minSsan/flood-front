@@ -2,6 +2,7 @@ import React, { useCallback, useRef, useState } from "react";
 import { getFloodResult } from "../../services/flood";
 import "./Home.css";
 import AddImg from "../../assets/icon-add.png";
+import assert from "assert";
 
 function Home() {
   const imageInputRef = useRef<HTMLInputElement>(null);
@@ -18,16 +19,16 @@ function Home() {
       const reader = new FileReader();
       reader.readAsDataURL(file);
       reader.onloadend = () => {
-        // @ts-ignore
-        setInputImage(reader.result);
+        // ? type 검증 - string type 보장
+        // assert(typeof reader.result === "string");
+        if (typeof reader.result === "string") setInputImage(reader.result);
       };
     }
   }, [imageInputRef.current]);
 
   // * 분석 시작 버튼을 누르면 실행되는 함수
   const handleExecuteModel = useCallback(() => {
-    //@ts-ignore
-    getFloodResult(imagePreviewRef.current)
+    getFloodResult(imagePreviewRef.current!)
       // TODO: res가 빈 문자열인 경우 - 정상적으로 실행되지 않았음
       .then((res) => console.log("result >>>", res))
       .catch((err) => console.error(err));
@@ -37,7 +38,6 @@ function Home() {
     <div>
       {inputImage ? (
         <img
-          //@ts-ignore
           ref={imagePreviewRef}
           src={inputImage}
           alt="ww"
@@ -53,7 +53,6 @@ function Home() {
           </label>
           <input
             id="file"
-            //@ts-ignore
             ref={imageInputRef}
             type="file"
             accept="image/*"
