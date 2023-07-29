@@ -1,3 +1,15 @@
+# 💧Flood - 홍수 분석 프로젝트
+
+### 🗓️ 기간
+
+23.07 - 23.09
+
+### 🎨 프로토타입 및 디자인 파일
+
+[👉🏻 Figma](https://www.figma.com/file/VtYEVU1ICIVHcxtBL2iNxJ/Untitled?type=design&node-id=0:1&mode=design&t=IJ1hp788HScTaLmk-1)
+
+---
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
