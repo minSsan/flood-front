@@ -75,8 +75,14 @@ button {
 
 /** text styles */
 .screenTitle {
-  font-family: "PretendardBold";
+  font-family: "PretendardExtraBold";
   font-size: 1.25rem;
+}
+
+.screenSmallTitle {
+  font-family: "PretendardBold";
+  font-size: 1rem;
+  color: #4e4e4e;
 }
 
 .screenSubtitle {

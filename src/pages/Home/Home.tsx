@@ -1,26 +1,55 @@
 import React, { useCallback, useRef, useState } from "react";
 import { getFloodResult } from "../../services/flood";
 import "./Home.css";
+import * as loadImage from "blueimp-load-image";
 
 function Home() {
+  // ? file(image) input tag
   const imageInputRef = useRef<HTMLInputElement>(null);
+  // ? image preview tag
   const imagePreviewRef = useRef<HTMLImageElement>(null);
-
+  // ? 사용자가 입력한 이미지를 base64 형식으로 저장
+  // -> base64 형식 변환은 onChange 내에서 FileReader로 처리)
   const [inputImage, setInputImage] = useState<string>("");
 
-  // * 입력 이미지가 바뀔 때마다 실행되는 함수
-  // * - preview image를 FileReader를 사용하여 반영한다.
-  const handleFileChange = useCallback(() => {
+  //* 입력 이미지가 변경될 때마다 실행되는 함수 (onChange 콜백함수)
+  /**
+   * 1. preview image를 FileReader를 사용하여 반영한다.
+   * 2. 입력 이미지의 메타 데이터(위치 정보 및 촬영 시간)를 추출한다.
+   */
+  const handleFileChange = useCallback(async () => {
     // TODO: input값 없을 경우 처리 필요 - 현재 에러 발생함
     if (imageInputRef.current?.files) {
+      // * 1. Preview Image 설정
       const file = imageInputRef.current.files[0];
       const reader = new FileReader();
       reader.readAsDataURL(file);
       reader.onloadend = () => {
         // ? type 검증 - string type 보장
-        // assert(typeof reader.result === "string");
-        if (typeof reader.result === "string") setInputImage(reader.result);
+        if (typeof reader.result === "string") {
+          setInputImage(reader.result);
+        }
       };
+
+      // * 2. MetaData 추출
+      loadImage.parseMetaData(file, (data) => {
+        let exifIFD = data.exif && data.exif.get("Exif");
+
+        if (exifIFD) {
+          // ! test code
+          // console.log("Exif data: ", data.exif);
+
+          // ? 촬영 시간 정보
+          console.log(
+            "date >>>",
+            // @ts-ignore
+            data.exif?.get("Exif").get("DateTimeOriginal")
+          );
+
+          // ? 촬영 위치 정보
+          console.log("GPS >>>", data.exif?.get("GPSInfo"));
+        }
+      });
     }
   }, []);
 
@@ -47,17 +76,25 @@ function Home() {
           {inputImage ? (
             // ? 이미지를 입력한 경우, 입력한 이미지를 띄운다.
             <>
-              <img
-                className="previewImg"
-                ref={imagePreviewRef}
-                src={inputImage}
-                alt="입력 사진"
-              />
-              {/* //? 이미지 삭제 버튼 */}
-              <button
-                className="removeImgBtn"
-                onClick={() => setInputImage("")}
-              />
+              <div>
+                <img
+                  className="previewImg"
+                  ref={imagePreviewRef}
+                  src={inputImage}
+                  alt="입력 사진"
+                />
+                {/* //? 이미지 삭제 버튼 */}
+                <button
+                  className="removeImgBtn"
+                  onClick={() => setInputImage("")}
+                />
+              </div>
+              <h3
+                className="screenSmallTitle"
+                style={{ marginTop: "1.375rem" }}
+              >
+                촬영 시간
+              </h3>
             </>
           ) : (
             // ? 이미지를 입력하지 않은 경우, 이미지 입력 버튼을 띄운다.
