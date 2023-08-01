@@ -2,6 +2,11 @@ import React, { useCallback, useRef, useState } from "react";
 import { getFloodResult } from "../../services/flood";
 import "./Home.css";
 import * as loadImage from "blueimp-load-image";
+import {
+  DateTimeFormatter,
+  FormattedDateInfo,
+} from "../../utils/date-time-formatter";
+import QuestionIcon from "../../assets/images/question-icon.svg";
 
 function Home() {
   // ? file(image) input tag
@@ -11,9 +16,13 @@ function Home() {
   // ? 사용자가 입력한 이미지를 base64 형식으로 저장
   // -> base64 형식 변환은 onChange 내에서 FileReader로 처리)
   const [inputImage, setInputImage] = useState<string>("");
+  // ? 사진 촬영일 텍스트
+  const [dateTimeText, setDateTimeText] = useState<string>("");
 
-  //* 입력 이미지가 변경될 때마다 실행되는 함수 (onChange 콜백함수)
+  console.log("dateTimeText >>>", dateTimeText);
+
   /**
+   * 입력 이미지가 변경될 때마다 실행되는 함수 (onChange 콜백함수)
    * 1. preview image를 FileReader를 사용하여 반영한다.
    * 2. 입력 이미지의 메타 데이터(위치 정보 및 촬영 시간)를 추출한다.
    */
@@ -33,20 +42,31 @@ function Home() {
 
       // * 2. MetaData 추출
       loadImage.parseMetaData(file, (data) => {
-        let exifIFD = data.exif && data.exif.get("Exif");
-
-        if (exifIFD) {
+        // ? - 촬영 시간 정보
+        if (data.exif?.get("Exif")) {
           // ! test code
           // console.log("Exif data: ", data.exif);
+          // console.log(
+          //   "date >>>",
+          //   // @ts-ignore
+          //   data.exif?.get("Exif").get("DateTimeOriginal")
+          //   );
+          // ! =========
 
-          // ? 촬영 시간 정보
-          console.log(
-            "date >>>",
-            // @ts-ignore
-            data.exif?.get("Exif").get("DateTimeOriginal")
-          );
+          //@ts-ignore
+          const dateTimeInfo = data.exif?.get("Exif").get("DateTimeOriginal");
 
-          // ? 촬영 위치 정보
+          // ? 촬영일 정보가 존재하는 경우
+          if (dateTimeInfo) {
+            const date: FormattedDateInfo = DateTimeFormatter(dateTimeInfo);
+            setDateTimeText(
+              `${date.year}년 ${date.month}월 ${date.date}일 ${date.hours}:${date.minutes}`
+            );
+          }
+        }
+
+        // ? - 촬영 위치 정보
+        if (data.exif?.get("GPSInfo")) {
           console.log("GPS >>>", data.exif?.get("GPSInfo"));
         }
       });
@@ -89,12 +109,56 @@ function Home() {
                   onClick={() => setInputImage("")}
                 />
               </div>
+
+              {/* //? 촬영 시간 제목 */}
               <h3
                 className="screenSmallTitle"
                 style={{ marginTop: "1.375rem" }}
               >
                 촬영 시간
               </h3>
+
+              {/* //? 촬영 시간 텍스트 */}
+              <p className="dateText">{dateTimeText}</p>
+
+              {/* //? 촬영 시간 수정 안내 및 버튼 */}
+              <p
+                className="dateInputInfoContainer"
+                style={{ marginTop: "0.25rem" }}
+                onClick={() => alert("수정하기 클릭")}
+              >
+                {/* 촬영 시간 수정 안내 */}
+                <img className="questionMark" src={QuestionIcon} />
+                <p style={{ marginLeft: "0.188rem" }}>
+                  사진의 실제 촬영 시간과 다른가요?
+                </p>
+
+                {/* 촬영 시간 수정 버튼 */}
+                <p
+                  style={{ color: "#86B0EE", marginLeft: "0.188rem" }}
+                  className="modifyText"
+                >
+                  <p>(</p>
+                  {/* pencil svg */}
+                  <svg
+                    width="11"
+                    height="11"
+                    viewBox="0 0 11 11"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M6.04003 2.44852L7.48002 1L10 3.53491L8.56001 4.98342M6.04003 2.44852L1.14912 7.36835C1.05364 7.46438 1 7.59466 1 7.73048V10.0532H3.30912C3.44415 10.0532 3.57364 9.99932 3.66912 9.90324L8.56001 4.98342M6.04003 2.44852L8.56001 4.98342"
+                      stroke="#86B0EE"
+                      stroke-width="1.02275"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                  </svg>
+                  수정하기
+                  <p>)</p>
+                </p>
+              </p>
             </>
           ) : (
             // ? 이미지를 입력하지 않은 경우, 이미지 입력 버튼을 띄운다.
