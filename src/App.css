@@ -90,3 +90,10 @@ button {
   font-size: 0.875rem;
   color: #aaaaaa;
 }
+
+.questionMark {
+  width: 0.75rem;
+  height: 0.75rem;
+  filter: invert(43%) sepia(0%) saturate(0%) hue-rotate(221deg) brightness(94%)
+    contrast(82%);
+}

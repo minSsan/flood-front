@@ -50,3 +50,29 @@
 #file {
   display: none;
 }
+
+.dateText {
+  margin-top: 0.375rem;
+
+  font-size: 0.875rem;
+  color: #aaaaaa;
+}
+
+.dateInputInfoContainer > *,
+.modifyText > * {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.dateInputInfoContainer > p {
+  font-size: 0.75rem;
+  color: #6b6b6b;
+}
+
+.modifyText {
+  text-decoration: underline;
+}
+
+.modifyText:hover {
+  cursor: pointer;
+}
