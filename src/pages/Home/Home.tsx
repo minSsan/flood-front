@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { getFloodResult } from "../../services/flood";
 import "./Home.css";
 import * as loadImage from "blueimp-load-image";
@@ -18,8 +18,8 @@ function Home() {
   const [inputImage, setInputImage] = useState<string>("");
   // ? 사진 촬영일 텍스트
   const [dateTimeText, setDateTimeText] = useState<string>("");
-
-  console.log("dateTimeText >>>", dateTimeText);
+  // ? 홍수 분석 결과 텍스트
+  const [] = useState<string>("");
 
   /**
    * 입력 이미지가 변경될 때마다 실행되는 함수 (onChange 콜백함수)
@@ -110,6 +110,7 @@ function Home() {
                 />
               </div>
 
+              {/* //* 촬영 시간 정보 */}
               {/* //? 촬영 시간 제목 */}
               <h3
                 className="screenSmallTitle"
@@ -159,6 +160,11 @@ function Home() {
                   <p>)</p>
                 </p>
               </p>
+
+              {/* //* 홍수 분석 결과 */}
+              <h3 className="screenSmallTitle" style={{ marginTop: "1.25rem" }}>
+                분석 결과
+              </h3>
             </>
           ) : (
             // ? 이미지를 입력하지 않은 경우, 이미지 입력 버튼을 띄운다.
@@ -195,7 +201,6 @@ function Home() {
             </>
           )}
         </div>
-
         {/* //? submit button (분석 시작 버튼) */}
         <button
           className={`submitBtn ${inputImage ? "active" : "inactive"}`}

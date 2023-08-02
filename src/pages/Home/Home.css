@@ -6,12 +6,15 @@
 .previewContainer {
   position: relative;
 
-  margin-top: 1.875rem;
+  margin: 1.875rem 0 3.125rem 0;
 }
 
 .previewImg {
   width: 17.563rem;
-  /* height: 15.938rem; */
+  height: 15.938rem;
+
+  object-fit: contain;
+  background-color: #ebebeb;
 
   border-radius: 0.625rem;
   -moz-border-radius: 0.625rem;
@@ -29,7 +32,7 @@
   width: 1.875rem;
   height: 1.875rem;
 
-  background-image: url("../../assets/images/_x-button\ circle.svg");
+  background-image: url("../../assets/images/x-button.png");
   background-size: cover;
   background-repeat: no-repeat;
 }

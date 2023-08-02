@@ -3,6 +3,10 @@
   margin: 0;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 /** fonts settings */
 @font-face {
   font-family: "PretendardLight";
