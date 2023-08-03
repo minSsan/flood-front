@@ -28,6 +28,8 @@ export const getFloodResult = async (
     const predictions = tf.argMax(output as tf.Tensor<tf.Rank>, 1); // TODO: type
     const maxIndex = predictions.dataSync()[0];
 
+    console.log(predictions);
+
     const result = flood_level_dict[maxIndex as 0 | 1 | 2 | 3];
 
     return result;

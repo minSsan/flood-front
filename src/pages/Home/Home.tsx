@@ -7,6 +7,8 @@ import {
   FormattedDateInfo,
 } from "../../utils/date-time-formatter";
 import QuestionIcon from "../../assets/images/question-icon.svg";
+import PencilIcon from "../../assets/images/pencil-skyblue.svg";
+import AddIcon from "../../assets/images/add-icon.svg";
 
 function Home() {
   // ? file(image) input tag
@@ -18,8 +20,10 @@ function Home() {
   const [inputImage, setInputImage] = useState<string>("");
   // ? 사진 촬영일 텍스트
   const [dateTimeText, setDateTimeText] = useState<string>("");
+  // ? 홍수 이미지 여부
+  const [isFlood, setIsFlood] = useState<boolean>(false);
   // ? 홍수 분석 결과 텍스트
-  const [] = useState<string>("");
+  const [floodResultText, setFloodResultText] = useState<string>("");
 
   /**
    * 입력 이미지가 변경될 때마다 실행되는 함수 (onChange 콜백함수)
@@ -27,6 +31,11 @@ function Home() {
    * 2. 입력 이미지의 메타 데이터(위치 정보 및 촬영 시간)를 추출한다.
    */
   const handleFileChange = useCallback(async () => {
+    // TODO: 시간정보 불러올 수 없는 경우
+    setDateTimeText("");
+    setIsFlood(false);
+    setFloodResultText("");
+
     // TODO: input값 없을 경우 처리 필요 - 현재 에러 발생함
     if (imageInputRef.current?.files) {
       // * 1. Preview Image 설정
@@ -77,7 +86,12 @@ function Home() {
   const handleExecuteModel = useCallback(() => {
     getFloodResult(imagePreviewRef.current!)
       // TODO: res가 빈 문자열인 경우 - 정상적으로 실행되지 않았음
-      .then((res) => console.log("result >>>", res))
+      .then((res) => {
+        console.log("result >>>", res);
+        setIsFlood(true);
+        if (res === "normal") return;
+        setFloodResultText(res);
+      })
       .catch((err) => console.error(err));
   }, []);
 
@@ -123,7 +137,7 @@ function Home() {
               <p className="dateText">{dateTimeText}</p>
 
               {/* //? 촬영 시간 수정 안내 및 버튼 */}
-              <p
+              <span
                 className="dateInputInfoContainer"
                 style={{ marginTop: "0.25rem" }}
                 onClick={() => alert("수정하기 클릭")}
@@ -135,36 +149,41 @@ function Home() {
                 </p>
 
                 {/* 촬영 시간 수정 버튼 */}
-                <p
+                <span
                   style={{ color: "#86B0EE", marginLeft: "0.188rem" }}
-                  className="modifyText"
+                  className="modifyTextContainer"
                 >
+                  {/* 아이콘 + 수정하기 */}
                   <p>(</p>
                   {/* pencil svg */}
-                  <svg
-                    width="11"
-                    height="11"
-                    viewBox="0 0 11 11"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M6.04003 2.44852L7.48002 1L10 3.53491L8.56001 4.98342M6.04003 2.44852L1.14912 7.36835C1.05364 7.46438 1 7.59466 1 7.73048V10.0532H3.30912C3.44415 10.0532 3.57364 9.99932 3.66912 9.90324L8.56001 4.98342M6.04003 2.44852L8.56001 4.98342"
-                      stroke="#86B0EE"
-                      stroke-width="1.02275"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    />
-                  </svg>
-                  수정하기
+                  <img src={PencilIcon} />
+                  <p style={{ textDecoration: "underline" }}>수정하기</p>
                   <p>)</p>
-                </p>
-              </p>
+                </span>
+              </span>
 
-              {/* //* 홍수 분석 결과 */}
-              <h3 className="screenSmallTitle" style={{ marginTop: "1.25rem" }}>
-                분석 결과
-              </h3>
+              {isFlood && (
+                <>
+                  {/* //* 홍수 분석 결과 */}
+                  <h3
+                    className="screenSmallTitle"
+                    style={{ marginTop: "1.25rem", marginBottom: "0.375rem" }}
+                  >
+                    분석 결과
+                  </h3>
+                  {floodResultText ? (
+                    <span className="resultTextContainer">
+                      침수 -&nbsp;
+                      <span className="resultText">{floodResultText}</span>
+                    </span>
+                  ) : (
+                    <span className="floodErrorText">
+                      홍수 사진이 아닌 것 같습니다.
+                      <p>사진을 다시 입력해주세요.</p>
+                    </span>
+                  )}
+                </>
+              )}
             </>
           ) : (
             // ? 이미지를 입력하지 않은 경우, 이미지 입력 버튼을 띄운다.

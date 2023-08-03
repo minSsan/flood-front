@@ -6,7 +6,7 @@
 .previewContainer {
   position: relative;
 
-  margin: 1.875rem 0 3.125rem 0;
+  margin: 1.875rem 0 5.5rem 0;
 }
 
 .previewImg {
@@ -32,7 +32,7 @@
   width: 1.875rem;
   height: 1.875rem;
 
-  background-image: url("../../assets/images/x-button.png");
+  background-image: url("../../assets/images/_x-button\ circle.svg");
   background-size: cover;
   background-repeat: no-repeat;
 }
@@ -72,10 +72,34 @@
   color: #6b6b6b;
 }
 
-.modifyText {
-  text-decoration: underline;
+.modifyTextContainer > p {
+  display: inline-block;
+  vertical-align: middle;
+  font-size: 0.75rem;
 }
 
-.modifyText:hover {
+.modifyTextContainer:hover {
   cursor: pointer;
+}
+
+.floodErrorText {
+  color: #f96a6a;
+  font-size: 0.75rem;
+}
+
+.floodErrorText > p {
+  font-family: "PretendardSemiBold";
+  font-size: 0.75rem;
+}
+
+.resultTextContainer {
+  font-family: "PretendardSemiBold";
+  font-size: 1.25rem;
+  color: #6b6b6b;
+}
+
+.resultText {
+  font-family: "PretendardBold";
+  font-size: 1.25rem;
+  color: #567bff;
 }
