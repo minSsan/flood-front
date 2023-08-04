@@ -1,0 +1,9 @@
+.modifyTextContainer > p {
+  display: inline-block;
+  vertical-align: middle;
+  font-size: 0.75rem;
+}
+
+.modifyTextContainer:hover {
+  cursor: pointer;
+}

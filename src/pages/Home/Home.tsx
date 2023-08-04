@@ -7,23 +7,51 @@ import {
   FormattedDateInfo,
 } from "../../utils/date-time-formatter";
 import QuestionIcon from "../../assets/images/question-icon.svg";
-import PencilIcon from "../../assets/images/pencil-skyblue.svg";
-import AddIcon from "../../assets/images/add-icon.svg";
+import EditButton from "../../components/edit-button/EditButton";
 
 function Home() {
+  // ? scroll ref - 스크롤 조작을 위해 사용
+  const scrollRef = useRef<HTMLDivElement>(null);
   // ? file(image) input tag
   const imageInputRef = useRef<HTMLInputElement>(null);
   // ? image preview tag
   const imagePreviewRef = useRef<HTMLImageElement>(null);
+
   // ? 사용자가 입력한 이미지를 base64 형식으로 저장
   // -> base64 형식 변환은 onChange 내에서 FileReader로 처리)
   const [inputImage, setInputImage] = useState<string>("");
   // ? 사진 촬영일 텍스트
-  const [dateTimeText, setDateTimeText] = useState<string>("");
-  // ? 홍수 이미지 여부
-  const [isFlood, setIsFlood] = useState<boolean>(false);
+  const [dateInfo, setDateInfo] = useState<FormattedDateInfo | null>(null);
+  // ? 홍수 이미지 분석 여부
+  const [isAnalyzed, setIsAnalyzed] = useState<boolean>(false);
   // ? 홍수 분석 결과 텍스트
   const [floodResultText, setFloodResultText] = useState<string>("");
+
+  // ? 홍수 분석 결과를 서버에 제출할 수 있는지 확인
+  // - 분석 결과, 홍수 사진으로 판별된 경우
+  const canSubmit: boolean = isAnalyzed && floodResultText !== "";
+
+  // * 홍수 모델 실행 함수
+  const executeModel = useCallback(() => {
+    getFloodResult(imagePreviewRef.current!)
+      .then((res) => {
+        console.log("result >>>", res);
+        setIsAnalyzed(true);
+
+        if (res === "normal") return;
+        setFloodResultText(res);
+      })
+      .catch((err) => console.error(err));
+  }, []);
+
+  // * 이미지 삭제 버튼 클릭시 실행되는 함수
+  // - 모든 입력값 초기화
+  const handleRemoveButton = useCallback(() => {
+    setInputImage("");
+    setDateInfo(null);
+    setIsAnalyzed(false);
+    setFloodResultText("");
+  }, []);
 
   /**
    * 입력 이미지가 변경될 때마다 실행되는 함수 (onChange 콜백함수)
@@ -32,8 +60,8 @@ function Home() {
    */
   const handleFileChange = useCallback(async () => {
     // TODO: 시간정보 불러올 수 없는 경우
-    setDateTimeText("");
-    setIsFlood(false);
+    setDateInfo(null);
+    setIsAnalyzed(false);
     setFloodResultText("");
 
     // TODO: input값 없을 경우 처리 필요 - 현재 에러 발생함
@@ -51,30 +79,19 @@ function Home() {
 
       // * 2. MetaData 추출
       loadImage.parseMetaData(file, (data) => {
-        // ? - 촬영 시간 정보
+        // * - 촬영 시간 정보
         if (data.exif?.get("Exif")) {
-          // ! test code
-          // console.log("Exif data: ", data.exif);
-          // console.log(
-          //   "date >>>",
-          //   // @ts-ignore
-          //   data.exif?.get("Exif").get("DateTimeOriginal")
-          //   );
-          // ! =========
-
           //@ts-ignore
           const dateTimeInfo = data.exif?.get("Exif").get("DateTimeOriginal");
 
           // ? 촬영일 정보가 존재하는 경우
           if (dateTimeInfo) {
             const date: FormattedDateInfo = DateTimeFormatter(dateTimeInfo);
-            setDateTimeText(
-              `${date.year}년 ${date.month}월 ${date.date}일 ${date.hours}:${date.minutes}`
-            );
+            setDateInfo(date);
           }
         }
 
-        // ? - 촬영 위치 정보
+        // * - 촬영 위치 정보
         if (data.exif?.get("GPSInfo")) {
           console.log("GPS >>>", data.exif?.get("GPSInfo"));
         }
@@ -82,21 +99,61 @@ function Home() {
     }
   }, []);
 
-  // * 분석 시작 버튼을 누르면 실행되는 함수
-  const handleExecuteModel = useCallback(() => {
-    getFloodResult(imagePreviewRef.current!)
-      // TODO: res가 빈 문자열인 경우 - 정상적으로 실행되지 않았음
-      .then((res) => {
-        console.log("result >>>", res);
-        setIsFlood(true);
-        if (res === "normal") return;
-        setFloodResultText(res);
-      })
-      .catch((err) => console.error(err));
-  }, []);
+  // * 분석 시작 버튼을 누를 때 실행되는 함수
+  // - 항상 isAnalyzed === false 인 상태에서 호출된다.
+  const handleStartAnalyze = useCallback(() => {
+    // ? 사진을 입력하지 않은 경우
+    if (!inputImage) {
+      alert("사진을 입력해주세요.");
+    }
+    // ? 사진 입력 완료 + 날짜 기입 완료된 경우
+    else if (dateInfo) {
+      executeModel();
+    }
+    // ? 사진 입력 완료 + 날짜 기입 안 된 경우
+    else {
+      alert("촬영 시간을 입력해주세요.");
+    }
+  }, [inputImage, dateInfo]);
+
+  // * 제출 버튼 - 조건부 렌더링
+  const SubmitButton: () => JSX.Element = useCallback(() => {
+    if (isAnalyzed) {
+      return (
+        <button
+          className={`submitBtn ${floodResultText ? "active" : "inactive"}`}
+          type="submit"
+          onClick={
+            floodResultText
+              ? () => alert("지도 스크린 이동")
+              : () => alert("홍수 사진이 아닌 정보는 제출하실 수 없습니다.")
+          }
+        >
+          위치 입력
+        </button>
+      );
+    } else {
+      return (
+        <button
+          className={`submitBtn ${
+            inputImage && !isAnalyzed && dateInfo ? "active" : "inactive"
+          }`}
+          type="submit"
+          onClick={handleStartAnalyze}
+        >
+          분석 시작
+        </button>
+      );
+    }
+  }, [isAnalyzed, floodResultText, inputImage, dateInfo]);
+
+  // * 분석 결과 노출시 스크롤을 맨 아래로 이동
+  useEffect(() => {
+    window.scrollTo(0, scrollRef.current?.scrollHeight!);
+  }, [isAnalyzed]);
 
   return (
-    <div className="homeContainer">
+    <div ref={scrollRef} className="homeContainer">
       <div style={{ padding: "2.875rem 0" }}>
         {/* //* title */}
         <h1 className="screenTitle">사진 업로드</h1>
@@ -118,10 +175,7 @@ function Home() {
                   alt="입력 사진"
                 />
                 {/* //? 이미지 삭제 버튼 */}
-                <button
-                  className="removeImgBtn"
-                  onClick={() => setInputImage("")}
-                />
+                <button className="removeImgBtn" onClick={handleRemoveButton} />
               </div>
 
               {/* //* 촬영 시간 정보 */}
@@ -134,35 +188,46 @@ function Home() {
               </h3>
 
               {/* //? 촬영 시간 텍스트 */}
-              <p className="dateText">{dateTimeText}</p>
+              <div style={{ marginTop: "0.375rem" }}>
+                {dateInfo ? (
+                  <>
+                    <p className="dateText">{`${dateInfo.year}년 ${dateInfo.month}월 ${dateInfo.date}일 ${dateInfo.hours}:${dateInfo.minutes}`}</p>
+                    {/* //? 촬영 시간 수정 안내 및 버튼 */}
+                    <span
+                      className="dateInputInfoContainer"
+                      style={{ marginTop: "0.25rem" }}
+                      onClick={() => alert("수정하기 클릭")}
+                    >
+                      {/* 촬영 시간 수정 안내 */}
+                      <img className="questionMark" src={QuestionIcon} alt="" />
+                      <p style={{ marginLeft: "0.188rem" }}>
+                        사진의 실제 촬영 시간과 다른가요?
+                      </p>
 
-              {/* //? 촬영 시간 수정 안내 및 버튼 */}
-              <span
-                className="dateInputInfoContainer"
-                style={{ marginTop: "0.25rem" }}
-                onClick={() => alert("수정하기 클릭")}
-              >
-                {/* 촬영 시간 수정 안내 */}
-                <img className="questionMark" src={QuestionIcon} />
-                <p style={{ marginLeft: "0.188rem" }}>
-                  사진의 실제 촬영 시간과 다른가요?
-                </p>
+                      {/* 촬영 시간 수정 버튼 */}
+                      <EditButton style={{ marginLeft: "0.188rem" }} />
+                    </span>
+                  </>
+                ) : (
+                  <>
+                    <p
+                      className="fontRegular font14"
+                      style={{ color: "#F96A6A" }}
+                    >
+                      촬영 시간을 불러올 수 없습니다.
+                    </p>
+                    <span
+                      className="fontBold font12"
+                      style={{ color: "#F96A6A" }}
+                    >
+                      시간을 직접 입력해주세요.
+                      <EditButton style={{ marginLeft: "0.188rem" }} />
+                    </span>
+                  </>
+                )}
+              </div>
 
-                {/* 촬영 시간 수정 버튼 */}
-                <span
-                  style={{ color: "#86B0EE", marginLeft: "0.188rem" }}
-                  className="modifyTextContainer"
-                >
-                  {/* 아이콘 + 수정하기 */}
-                  <p>(</p>
-                  {/* pencil svg */}
-                  <img src={PencilIcon} />
-                  <p style={{ textDecoration: "underline" }}>수정하기</p>
-                  <p>)</p>
-                </span>
-              </span>
-
-              {isFlood && (
+              {isAnalyzed && (
                 <>
                   {/* //* 홍수 분석 결과 */}
                   <h3
@@ -178,7 +243,7 @@ function Home() {
                     </span>
                   ) : (
                     <span className="floodErrorText">
-                      홍수 사진이 아닌 것 같습니다.
+                      홍수 발생 지역의 사진이 아닌 것 같습니다.
                       <p>사진을 다시 입력해주세요.</p>
                     </span>
                   )}
@@ -220,18 +285,9 @@ function Home() {
             </>
           )}
         </div>
+
         {/* //? submit button (분석 시작 버튼) */}
-        <button
-          className={`submitBtn ${inputImage ? "active" : "inactive"}`}
-          type="submit"
-          onClick={
-            inputImage
-              ? handleExecuteModel
-              : () => alert("사진을 입력해주세요.")
-          }
-        >
-          분석 시작
-        </button>
+        <SubmitButton />
       </div>
     </div>
   );

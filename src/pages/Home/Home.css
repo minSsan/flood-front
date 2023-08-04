@@ -72,16 +72,6 @@
   color: #6b6b6b;
 }
 
-.modifyTextContainer > p {
-  display: inline-block;
-  vertical-align: middle;
-  font-size: 0.75rem;
-}
-
-.modifyTextContainer:hover {
-  cursor: pointer;
-}
-
 .floodErrorText {
   color: #f96a6a;
   font-size: 0.75rem;

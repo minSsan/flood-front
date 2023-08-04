@@ -14,7 +14,7 @@ export const getFloodResult = async (
     const model = await tf.loadGraphModel(
       "http://127.0.0.1:3000/model/model.json"
     );
-    console.log("Successfully loaded model");
+    // console.log("Successfully loaded model");
 
     // * Image Processing
     const imgTensor = tf.browser.fromPixels(imageElement, 3).toFloat();
@@ -27,8 +27,6 @@ export const getFloodResult = async (
     // * Model Result
     const predictions = tf.argMax(output as tf.Tensor<tf.Rank>, 1); // TODO: type
     const maxIndex = predictions.dataSync()[0];
-
-    console.log(predictions);
 
     const result = flood_level_dict[maxIndex as 0 | 1 | 2 | 3];
 

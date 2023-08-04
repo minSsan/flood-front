@@ -7,6 +7,10 @@ html {
   scroll-behavior: smooth;
 }
 
+::-webkit-scrollbar {
+  display: none;
+}
+
 /** fonts settings */
 @font-face {
   font-family: "PretendardLight";
@@ -31,6 +35,36 @@ html {
 @font-face {
   font-family: "PretendardExtraBold";
   src: url("../src/assets/fonts/Pretendard-ExtraBold.ttf");
+}
+
+/** font styles */
+.fontLight {
+  font-family: "PretendardLight";
+}
+
+.fontRegular {
+  font-family: "PretendardRegular";
+}
+
+.fontSemiBold {
+  font-family: "PretendardSemiBold";
+}
+
+.fontBold {
+  font-family: "PretendardBold";
+}
+
+.fontExtraBold {
+  font-family: "PretendardExtraBold";
+}
+
+/** font sizes */
+.font12 {
+  font-size: 0.75rem;
+}
+
+.font14 {
+  font-size: 0.875rem;
 }
 
 /** default font size */
@@ -62,6 +96,9 @@ button {
   height: 3.063rem;
 
   border-radius: 0.938rem;
+  -moz-border-radius: 0.938rem;
+  -khtml-border-radius: 0.938rem;
+  -webkit-border-radius: 0.938rem;
 
   position: fixed;
   bottom: 3.125rem;
