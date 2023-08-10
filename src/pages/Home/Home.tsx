@@ -8,6 +8,7 @@ import {
 } from "../../utils/date-time-formatter";
 import QuestionIcon from "../../assets/images/question-icon.svg";
 import EditButton from "../../components/edit-button/EditButton";
+import Modal from "../../components/modal/Modal";
 
 function Home() {
   // ? scroll ref - 스크롤 조작을 위해 사용
@@ -26,6 +27,8 @@ function Home() {
   const [isAnalyzed, setIsAnalyzed] = useState<boolean>(false);
   // ? 홍수 분석 결과 텍스트
   const [floodResult, setFloodResult] = useState<FloodResult | null>(null);
+  // ? 모달창 열림 / 닫힘 여부
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
   // * 홍수 모델 실행 함수
   const executeModel = useCallback(() => {
@@ -121,15 +124,15 @@ function Home() {
 
   // * 제출 버튼 - 조건부 렌더링
   const SubmitButton: () => JSX.Element = useCallback(() => {
-    return (
-      <button
-        className={`submitBtn ${inputImage ? "active" : "inactive"}`}
-        type="submit"
-        onClick={executeModel}
-      >
-        분석 시작
-      </button>
-    );
+    // return (
+    //   <button
+    //     className={`submitBtn ${inputImage ? "active" : "inactive"}`}
+    //     type="submit"
+    //     onClick={executeModel}
+    //   >
+    //     분석 시작
+    //   </button>
+    // );
 
     if (isAnalyzed) {
       return (
@@ -167,6 +170,12 @@ function Home() {
 
   return (
     <div ref={scrollRef} className="homeContainer">
+      {isModalOpen && (
+        <Modal setIsModalOpen={setIsModalOpen}>
+          <h3 className="fontSemiBold">촬영 시간 직접입력</h3>
+        </Modal>
+      )}
+
       <div style={{ padding: "2.875rem 0" }}>
         {/* //* title */}
         <h1 className="screenTitle">사진 업로드</h1>
@@ -218,7 +227,10 @@ function Home() {
                       </p>
 
                       {/* 촬영 시간 수정 버튼 */}
-                      <EditButton style={{ marginLeft: "0.188rem" }} />
+                      <EditButton
+                        style={{ marginLeft: "0.188rem" }}
+                        onClick={() => setIsModalOpen(true)}
+                      />
                     </span>
                   </>
                 ) : (
@@ -234,7 +246,10 @@ function Home() {
                       style={{ color: "#F96A6A" }}
                     >
                       시간을 직접 입력해주세요.
-                      <EditButton style={{ marginLeft: "0.188rem" }} />
+                      <EditButton
+                        style={{ marginLeft: "0.188rem" }}
+                        onClick={() => setIsModalOpen(true)}
+                      />
                     </span>
                   </>
                 )}

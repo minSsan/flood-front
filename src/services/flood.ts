@@ -17,6 +17,7 @@ export const getFloodResult = async (
   try {
     // * Loading the Model
     const model = await tf.loadGraphModel(
+      // TODO: domain
       "http://127.0.0.1:3000/model/model.json"
     );
     // console.log("Successfully loaded model");
