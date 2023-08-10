@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { getFloodResult } from "../../services/flood";
+import { FloodResult, getFloodResult } from "../../services/flood";
 import "./Home.css";
 import * as loadImage from "blueimp-load-image";
 import {
@@ -19,27 +19,30 @@ function Home() {
 
   // ? 사용자가 입력한 이미지를 base64 형식으로 저장
   // -> base64 형식 변환은 onChange 내에서 FileReader로 처리)
-  const [inputImage, setInputImage] = useState<string>("");
+  const [inputImage, setInputImage] = useState<string | null>(null);
   // ? 사진 촬영일 텍스트
   const [dateInfo, setDateInfo] = useState<FormattedDateInfo | null>(null);
   // ? 홍수 이미지 분석 여부
   const [isAnalyzed, setIsAnalyzed] = useState<boolean>(false);
   // ? 홍수 분석 결과 텍스트
-  const [floodResultText, setFloodResultText] = useState<string>("");
-
-  // ? 홍수 분석 결과를 서버에 제출할 수 있는지 확인
-  // - 분석 결과, 홍수 사진으로 판별된 경우
-  const canSubmit: boolean = isAnalyzed && floodResultText !== "";
+  const [floodResult, setFloodResult] = useState<FloodResult | null>(null);
 
   // * 홍수 모델 실행 함수
   const executeModel = useCallback(() => {
     getFloodResult(imagePreviewRef.current!)
       .then((res) => {
-        console.log("result >>>", res);
+        if (!res) {
+          alert(
+            "홍수를 판별하는 과정에서 오류가 발생하였습니다.\n다시 시도해주세요."
+          );
+          return;
+        }
+
         setIsAnalyzed(true);
 
-        if (res === "normal") return;
-        setFloodResultText(res);
+        if (res.floodLevel === "normal") return;
+
+        setFloodResult(res);
       })
       .catch((err) => console.error(err));
   }, []);
@@ -47,10 +50,10 @@ function Home() {
   // * 이미지 삭제 버튼 클릭시 실행되는 함수
   // - 모든 입력값 초기화
   const handleRemoveButton = useCallback(() => {
-    setInputImage("");
+    setInputImage(null);
     setDateInfo(null);
     setIsAnalyzed(false);
-    setFloodResultText("");
+    setFloodResult(null);
   }, []);
 
   /**
@@ -62,7 +65,7 @@ function Home() {
     // TODO: 시간정보 불러올 수 없는 경우
     setDateInfo(null);
     setIsAnalyzed(false);
-    setFloodResultText("");
+    setFloodResult(null);
 
     // TODO: input값 없을 경우 처리 필요 - 현재 에러 발생함
     if (imageInputRef.current?.files) {
@@ -105,26 +108,36 @@ function Home() {
     // ? 사진을 입력하지 않은 경우
     if (!inputImage) {
       alert("사진을 입력해주세요.");
-    }
-    // ? 사진 입력 완료 + 날짜 기입 완료된 경우
-    else if (dateInfo) {
-      executeModel();
+      return;
     }
     // ? 사진 입력 완료 + 날짜 기입 안 된 경우
-    else {
+    if (!dateInfo) {
       alert("촬영 시간을 입력해주세요.");
+      return;
     }
+    // ? 사진 입력 완료 + 날짜 기입 완료된 경우
+    executeModel();
   }, [inputImage, dateInfo]);
 
   // * 제출 버튼 - 조건부 렌더링
   const SubmitButton: () => JSX.Element = useCallback(() => {
+    return (
+      <button
+        className={`submitBtn ${inputImage ? "active" : "inactive"}`}
+        type="submit"
+        onClick={executeModel}
+      >
+        분석 시작
+      </button>
+    );
+
     if (isAnalyzed) {
       return (
         <button
-          className={`submitBtn ${floodResultText ? "active" : "inactive"}`}
+          className={`submitBtn ${floodResult ? "active" : "inactive"}`}
           type="submit"
           onClick={
-            floodResultText
+            floodResult
               ? () => alert("지도 스크린 이동")
               : () => alert("홍수 사진이 아닌 정보는 제출하실 수 없습니다.")
           }
@@ -136,7 +149,7 @@ function Home() {
       return (
         <button
           className={`submitBtn ${
-            inputImage && !isAnalyzed && dateInfo ? "active" : "inactive"
+            inputImage && dateInfo ? "active" : "inactive"
           }`}
           type="submit"
           onClick={handleStartAnalyze}
@@ -145,11 +158,11 @@ function Home() {
         </button>
       );
     }
-  }, [isAnalyzed, floodResultText, inputImage, dateInfo]);
+  }, [isAnalyzed, floodResult, inputImage, dateInfo]);
 
   // * 분석 결과 노출시 스크롤을 맨 아래로 이동
   useEffect(() => {
-    window.scrollTo(0, scrollRef.current?.scrollHeight!);
+    isAnalyzed && window.scrollTo(0, scrollRef.current?.scrollHeight!);
   }, [isAnalyzed]);
 
   return (
@@ -236,10 +249,10 @@ function Home() {
                   >
                     분석 결과
                   </h3>
-                  {floodResultText ? (
+                  {floodResult ? (
                     <span className="resultTextContainer">
                       침수 -&nbsp;
-                      <span className="resultText">{floodResultText}</span>
+                      <span className="resultText">{`${floodResult.floodLevel} ${floodResult.accuracy}%`}</span>
                     </span>
                   ) : (
                     <span className="floodErrorText">
