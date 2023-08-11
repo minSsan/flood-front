@@ -9,6 +9,7 @@ import {
 import QuestionIcon from "../../assets/images/question-icon.svg";
 import EditButton from "../../components/edit-button/EditButton";
 import Modal from "../../components/modal/Modal";
+import { DateTimePicker } from "@mui/x-date-pickers";
 
 function Home() {
   // ? scroll ref - 스크롤 조작을 위해 사용
@@ -173,6 +174,7 @@ function Home() {
       {isModalOpen && (
         <Modal setIsModalOpen={setIsModalOpen}>
           <h3 className="fontSemiBold">촬영 시간 직접입력</h3>
+          <DateTimePicker />
         </Modal>
       )}
 
@@ -218,7 +220,7 @@ function Home() {
                     <span
                       className="dateInputInfoContainer"
                       style={{ marginTop: "0.25rem" }}
-                      onClick={() => alert("수정하기 클릭")}
+                      onClick={() => setIsModalOpen(true)}
                     >
                       {/* 촬영 시간 수정 안내 */}
                       <img className="questionMark" src={QuestionIcon} alt="" />
@@ -227,10 +229,7 @@ function Home() {
                       </p>
 
                       {/* 촬영 시간 수정 버튼 */}
-                      <EditButton
-                        style={{ marginLeft: "0.188rem" }}
-                        onClick={() => setIsModalOpen(true)}
-                      />
+                      <EditButton style={{ marginLeft: "0.188rem" }} />
                     </span>
                   </>
                 ) : (
