@@ -9,6 +9,8 @@ import {
 import QuestionIcon from "../../assets/images/question-icon.svg";
 import EditButton from "../../components/edit-button/EditButton";
 import Modal from "../../components/modal/Modal";
+import { DateTimePicker } from "@mui/x-date-pickers";
+import dayjs from "dayjs";
 
 function Home() {
   // ? scroll ref - 스크롤 조작을 위해 사용
@@ -172,7 +174,23 @@ function Home() {
     <div ref={scrollRef} className="homeContainer">
       {isModalOpen && (
         <Modal setIsModalOpen={setIsModalOpen}>
-          <h3 className="fontSemiBold">촬영 시간 직접입력</h3>
+          <p className="fontSemiBold">촬영 시간 직접입력</p>
+          <DateTimePicker
+            className="datePicker"
+            format={`YYYY년 MM월 DD일 HH:mm`}
+            maxDateTime={dayjs()}
+            slotProps={{ textField: { size: "small" } }}
+            onAccept={(value) => {
+              value &&
+                setDateInfo({
+                  year: value.year(),
+                  month: value.month() + 1,
+                  date: value.date(),
+                  hours: value.hour(),
+                  minutes: value.minute(),
+                });
+            }}
+          />
         </Modal>
       )}
 
@@ -213,12 +231,22 @@ function Home() {
               <div style={{ marginTop: "0.375rem" }}>
                 {dateInfo ? (
                   <>
-                    <p className="dateText">{`${dateInfo.year}년 ${dateInfo.month}월 ${dateInfo.date}일 ${dateInfo.hours}:${dateInfo.minutes}`}</p>
+                    <p className="dateText">{`${dateInfo.year}년 ${
+                      dateInfo.month
+                    }월 ${dateInfo.date}일 ${
+                      dateInfo.hours < 10
+                        ? "0" + dateInfo.hours
+                        : dateInfo.hours
+                    }:${
+                      dateInfo.minutes < 10
+                        ? "0" + dateInfo.minutes
+                        : dateInfo.minutes
+                    }`}</p>
                     {/* //? 촬영 시간 수정 안내 및 버튼 */}
                     <span
                       className="dateInputInfoContainer"
                       style={{ marginTop: "0.25rem" }}
-                      onClick={() => alert("수정하기 클릭")}
+                      onClick={() => setIsModalOpen(true)}
                     >
                       {/* 촬영 시간 수정 안내 */}
                       <img className="questionMark" src={QuestionIcon} alt="" />
@@ -227,10 +255,7 @@ function Home() {
                       </p>
 
                       {/* 촬영 시간 수정 버튼 */}
-                      <EditButton
-                        style={{ marginLeft: "0.188rem" }}
-                        onClick={() => setIsModalOpen(true)}
-                      />
+                      <EditButton style={{ marginLeft: "0.188rem" }} />
                     </span>
                   </>
                 ) : (
