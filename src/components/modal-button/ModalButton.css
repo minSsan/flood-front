@@ -1,0 +1,16 @@
+.modalButton {
+  padding: 0.625rem 1.625rem;
+
+  border-radius: 0.313rem;
+  box-shadow: 0 0 0 1.5px #c5c5c5 inset;
+
+  background-color: transparent;
+  color: #c5c5c5;
+}
+
+.modalButton.active {
+  box-shadow: none;
+
+  background-color: #8bd3f6;
+  color: white;
+}
