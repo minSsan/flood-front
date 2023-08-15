@@ -2,8 +2,8 @@ export interface FormattedDateInfo {
   year: number;
   month: number;
   date: number;
-  hours: string;
-  minutes: string;
+  hours: number;
+  minutes: number;
 }
 
 export const DateTimeFormatter = (date: string): FormattedDateInfo => {
@@ -21,7 +21,7 @@ export const DateTimeFormatter = (date: string): FormattedDateInfo => {
     year: parseInt(dateInfoArray[0]),
     month: parseInt(dateInfoArray[1]),
     date: parseInt(dateInfoArray[2]),
-    hours: timeInfoArray[0],
-    minutes: timeInfoArray[1],
+    hours: parseInt(timeInfoArray[0]),
+    minutes: parseInt(timeInfoArray[1]),
   };
 };

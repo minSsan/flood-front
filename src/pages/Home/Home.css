@@ -93,3 +93,9 @@
   font-size: 1.25rem;
   color: #567bff;
 }
+
+.datePicker {
+  margin-top: 30px;
+
+  width: 100%;
+}
