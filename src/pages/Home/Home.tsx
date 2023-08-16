@@ -39,16 +39,14 @@ function Home() {
     getFloodResult(imagePreviewRef.current!)
       .then((res) => {
         if (!res) {
-          alert(
-            "홍수를 판별하는 과정에서 오류가 발생하였습니다.\n다시 시도해주세요."
-          );
+          alert("분석 과정에서 오류가 발생하였습니다.\n다시 시도해주세요.");
           return;
         }
-
+        // ? 분석이 완료되었음을 기록
         setIsAnalyzed(true);
 
+        // ? 홍수 사진이 아닐 경우에는 결괏값을 기록하지 않는다.
         if (res.floodLevel === "normal") return;
-
         setFloodResult(res);
       })
       .catch((err) => console.error(err));
@@ -69,7 +67,6 @@ function Home() {
    * 2. 입력 이미지의 메타 데이터(위치 정보 및 촬영 시간)를 추출한다.
    */
   const handleFileChange = useCallback(async () => {
-    // TODO: 시간정보 불러올 수 없는 경우
     setDateInfo(null);
     setIsAnalyzed(false);
     setFloodResult(null);
@@ -199,8 +196,8 @@ function Home() {
             onAccept={(value) => {
               if (value) {
                 setDateInfo(new Date(value.toISOString()));
+                setIsModalOpen(false);
               }
-              setIsModalOpen(false);
             }}
           />
         </Modal>
