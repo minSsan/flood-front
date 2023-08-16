@@ -6,6 +6,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { koKR } from "@mui/material/locale";
+import Result from "./pages/Result/Result";
 
 const theme = createTheme(
   {
@@ -20,9 +21,8 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       <LocalizationProvider dateAdapter={AdapterDayjs}>
-        <Layout>
-          <Home />
-        </Layout>
+        {/* <Home /> */}
+        <Result />
       </LocalizationProvider>
     </ThemeProvider>
   );

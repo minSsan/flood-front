@@ -1,0 +1,10 @@
+#homeBtn {
+  width: 100%;
+
+  padding: 1rem 0;
+
+  background-color: #8bd3f6;
+  color: white;
+
+  border-radius: 0.5rem;
+}
