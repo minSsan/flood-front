@@ -7,10 +7,12 @@ import {
   FormattedDateInfo,
 } from "../../utils/date-time-formatter";
 import QuestionIcon from "../../assets/images/question-icon.svg";
+import CloseIcon from "../../assets/images/close.png";
 import EditButton from "../../components/edit-button/EditButton";
 import Modal from "../../components/modal/Modal";
 import { DateTimePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
+import Row from "../../components/row/Row";
 
 function Home() {
   // ? scroll ref - 스크롤 조작을 위해 사용
@@ -24,7 +26,7 @@ function Home() {
   // -> base64 형식 변환은 onChange 내에서 FileReader로 처리)
   const [inputImage, setInputImage] = useState<string | null>(null);
   // ? 사진 촬영일 텍스트
-  const [dateInfo, setDateInfo] = useState<FormattedDateInfo | null>(null);
+  const [dateInfo, setDateInfo] = useState<Date | null>(null);
   // ? 홍수 이미지 분석 여부
   const [isAnalyzed, setIsAnalyzed] = useState<boolean>(false);
   // ? 홍수 분석 결과 텍스트
@@ -37,16 +39,14 @@ function Home() {
     getFloodResult(imagePreviewRef.current!)
       .then((res) => {
         if (!res) {
-          alert(
-            "홍수를 판별하는 과정에서 오류가 발생하였습니다.\n다시 시도해주세요."
-          );
+          alert("분석 과정에서 오류가 발생하였습니다.\n다시 시도해주세요.");
           return;
         }
-
+        // ? 분석이 완료되었음을 기록
         setIsAnalyzed(true);
 
+        // ? 홍수 사진이 아닐 경우에는 결괏값을 기록하지 않는다.
         if (res.floodLevel === "normal") return;
-
         setFloodResult(res);
       })
       .catch((err) => console.error(err));
@@ -67,7 +67,6 @@ function Home() {
    * 2. 입력 이미지의 메타 데이터(위치 정보 및 촬영 시간)를 추출한다.
    */
   const handleFileChange = useCallback(async () => {
-    // TODO: 시간정보 불러올 수 없는 경우
     setDateInfo(null);
     setIsAnalyzed(false);
     setFloodResult(null);
@@ -95,7 +94,15 @@ function Home() {
           // ? 촬영일 정보가 존재하는 경우
           if (dateTimeInfo) {
             const date: FormattedDateInfo = DateTimeFormatter(dateTimeInfo);
-            setDateInfo(date);
+            setDateInfo(
+              new Date(
+                date.year,
+                date.month - 1,
+                date.date,
+                date.hours,
+                date.minutes
+              )
+            );
           }
         }
 
@@ -126,16 +133,6 @@ function Home() {
 
   // * 제출 버튼 - 조건부 렌더링
   const SubmitButton: () => JSX.Element = useCallback(() => {
-    // return (
-    //   <button
-    //     className={`submitBtn ${inputImage ? "active" : "inactive"}`}
-    //     type="submit"
-    //     onClick={executeModel}
-    //   >
-    //     분석 시작
-    //   </button>
-    // );
-
     if (isAnalyzed) {
       return (
         <button
@@ -172,23 +169,35 @@ function Home() {
 
   return (
     <div ref={scrollRef} className="homeContainer">
+      {/* //* 촬영 시간 입력 모달창 */}
       {isModalOpen && (
-        <Modal setIsModalOpen={setIsModalOpen}>
-          <p className="fontSemiBold">촬영 시간 직접입력</p>
+        <Modal
+          setIsModalOpen={setIsModalOpen}
+          modalStyle={{ position: "relative" }}
+        >
+          <Row style={{ justifyContent: "space-between" }}>
+            <p className="fontSemiBold">촬영 시간 직접입력</p>
+            <img
+              src={CloseIcon}
+              alt="닫기"
+              style={{
+                width: "1.5rem",
+                height: "1.5rem",
+              }}
+              onClick={() => setIsModalOpen(false)}
+            />
+          </Row>
           <DateTimePicker
             className="datePicker"
             format={`YYYY년 MM월 DD일 HH:mm`}
+            value={dayjs(dateInfo)}
             maxDateTime={dayjs()}
             slotProps={{ textField: { size: "small" } }}
             onAccept={(value) => {
-              value &&
-                setDateInfo({
-                  year: value.year(),
-                  month: value.month() + 1,
-                  date: value.date(),
-                  hours: value.hour(),
-                  minutes: value.minute(),
-                });
+              if (value) {
+                setDateInfo(new Date(value.toISOString()));
+                setIsModalOpen(false);
+              }
             }}
           />
         </Modal>
@@ -231,16 +240,16 @@ function Home() {
               <div style={{ marginTop: "0.375rem" }}>
                 {dateInfo ? (
                   <>
-                    <p className="dateText">{`${dateInfo.year}년 ${
-                      dateInfo.month
-                    }월 ${dateInfo.date}일 ${
-                      dateInfo.hours < 10
-                        ? "0" + dateInfo.hours
-                        : dateInfo.hours
+                    <p className="dateText">{`${dateInfo.getFullYear()}년 ${
+                      dateInfo.getMonth() + 1
+                    }월 ${dateInfo.getDate()}일 ${
+                      dateInfo.getHours() < 10
+                        ? "0" + dateInfo.getHours()
+                        : dateInfo.getHours()
                     }:${
-                      dateInfo.minutes < 10
-                        ? "0" + dateInfo.minutes
-                        : dateInfo.minutes
+                      dateInfo.getMinutes() < 10
+                        ? "0" + dateInfo.getMinutes()
+                        : dateInfo.getMinutes()
                     }`}</p>
                     {/* //? 촬영 시간 수정 안내 및 버튼 */}
                     <span
