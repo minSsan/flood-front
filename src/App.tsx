@@ -1,12 +1,12 @@
 import React, { useRef, useState } from "react";
 import "./App.css";
 import Home from "./pages/Home/Home";
-import Layout from "./components/Layout";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { koKR } from "@mui/material/locale";
 import Result from "./pages/Result/Result";
+import { Routes, Route } from "react-router-dom";
 
 const theme = createTheme(
   {
@@ -21,8 +21,10 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       <LocalizationProvider dateAdapter={AdapterDayjs}>
-        {/* <Home /> */}
-        <Result />
+        <Routes>
+          <Route index element={<Home />} />
+          <Route path="/complete" element={<Result />} />
+        </Routes>
       </LocalizationProvider>
     </ThemeProvider>
   );
