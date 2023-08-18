@@ -3,6 +3,7 @@
   height: 90px;
 
   position: fixed;
+  z-index: 999;
   top: 0;
 
   line-height: 90px;
