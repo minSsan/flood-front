@@ -1,0 +1,10 @@
+#inputScreenContainer {
+  display: flex;
+  justify-content: center;
+
+  padding: 2.875rem;
+}
+
+#inputScreenWrapper {
+  width: 100%;
+}

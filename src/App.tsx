@@ -7,6 +7,7 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { koKR } from "@mui/material/locale";
 import Result from "./pages/Result/Result";
 import { Routes, Route } from "react-router-dom";
+import InputLocation from "./pages/InputLocation/InputLocation";
 
 const theme = createTheme(
   {
@@ -23,6 +24,7 @@ function App() {
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         <Routes>
           <Route index element={<Home />} />
+          <Route path="/location" element={<InputLocation />} />
           <Route path="/complete" element={<Result />} />
         </Routes>
       </LocalizationProvider>

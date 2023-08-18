@@ -1,8 +1,3 @@
-.homeContainer {
-  display: flex;
-  justify-content: center;
-}
-
 .previewContainer {
   position: relative;
 
@@ -10,7 +5,7 @@
 }
 
 .previewImg {
-  width: 17.563rem;
+  width: 100%;
   height: 15.938rem;
 
   object-fit: contain;
@@ -38,7 +33,7 @@
 }
 
 .imageFileInputLabel {
-  width: 17.563rem;
+  width: 100%;
   height: 15.938rem;
 
   display: flex;
@@ -47,7 +42,7 @@
 
   background-image: url("../../assets/images/select-img-background.png");
   background-repeat: no-repeat;
-  background-size: cover;
+  background-size: contain;
 }
 
 #file {

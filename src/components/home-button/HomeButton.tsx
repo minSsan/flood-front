@@ -1,17 +1,17 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import "./HomeButton.css";
 
 interface HomeButtonProps {
   style?: React.CSSProperties;
-  onClick?: () => any;
 }
 
 function HomeButton(props: HomeButtonProps) {
-  const { style, onClick } = props;
+  const { style } = props;
   return (
-    <button id="homeBtn" style={style} onClick={onClick}>
+    <Link to={"/"} id="homeBtn" style={style}>
       <p className="fontSemiBold font18">홈으로</p>
-    </button>
+    </Link>
   );
 }
 

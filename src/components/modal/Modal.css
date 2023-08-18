@@ -26,6 +26,7 @@
 
 #modalView {
   width: 100%;
+  max-width: 313px;
 
   padding: 1.25rem;
 
