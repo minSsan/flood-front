@@ -101,17 +101,16 @@ button {
 }
 
 .submitBtnContainer {
-  width: 100%;
-
   position: fixed;
   bottom: 0;
+
+  width: 100%;
+  padding-bottom: 3.125rem;
 
   display: flex;
   justify-content: center;
 
-  padding-bottom: 3.125rem;
-
-  background-color: inherit;
+  background-color: white;
 }
 
 .submitBtn {
@@ -130,9 +129,6 @@ button {
   -moz-border-radius: 0.938rem;
   -khtml-border-radius: 0.938rem;
   -webkit-border-radius: 0.938rem;
-
-  /* position: fixed;
-  bottom: 3.125rem; */
 }
 
 .active {

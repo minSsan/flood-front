@@ -12,8 +12,10 @@ import Modal from "../../components/modal/Modal";
 import { DateTimePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import InputScreenLayout from "../../components/input-screen-layout/InputScreenLayout";
-import { Link } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import Layout from "../../components/Layout";
+import useCurrentLocation, { Location } from "../../hooks/useCurrentLocation";
+import { locationFormatter } from "../../utils/location-formatter";
 
 function Home() {
   // ? scroll ref - 스크롤 조작을 위해 사용
@@ -26,14 +28,26 @@ function Home() {
   // ? 사용자가 입력한 이미지를 base64 형식으로 저장
   // -> base64 형식 변환은 onChange 내에서 FileReader로 처리)
   const [inputImage, setInputImage] = useState<string | null>(null);
-  // ? 사진 촬영일 텍스트
-  const [dateInfo, setDateInfo] = useState<Date | null>(null);
   // ? 홍수 이미지 분석 여부
   const [isAnalyzed, setIsAnalyzed] = useState<boolean>(false);
   // ? 홍수 분석 결과 텍스트
   const [floodResult, setFloodResult] = useState<FloodResult | null>(null);
   // ? 모달창 열림 / 닫힘 여부
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+
+  // ? 사진 촬영일 텍스트
+  const [dateInfo, setDateInfo] = useState<Date | null>(null);
+  // ? 디바이스 위치 정보
+  const { location: deviceLocation, error: deviceLocationError } =
+    useCurrentLocation();
+  // ? 현재 입력된 이미지의 위치 정보
+  const [imageLocation, setImageLocation] = useState<Location | null>(null);
+
+  // ! test
+  console.log("rendered");
+  console.info("location >>> ", deviceLocation);
+  console.info("location error >>>", deviceLocationError);
+  console.info("imageLocation >>>", imageLocation);
 
   // * 홍수 모델 실행 함수
   const executeModel = useCallback(() => {
@@ -60,6 +74,7 @@ function Home() {
     setDateInfo(null);
     setIsAnalyzed(false);
     setFloodResult(null);
+    setImageLocation(null);
   }, []);
 
   /**
@@ -71,6 +86,7 @@ function Home() {
     setDateInfo(null);
     setIsAnalyzed(false);
     setFloodResult(null);
+    setImageLocation(null);
 
     // TODO: input값 없을 경우 처리 필요 - 현재 에러 발생함
     if (imageInputRef.current?.files) {
@@ -109,7 +125,16 @@ function Home() {
 
         // * - 촬영 위치 정보
         if (data.exif?.get("GPSInfo")) {
-          console.log("GPS >>>", data.exif?.get("GPSInfo"));
+          const GPS = data.exif.get("GPSInfo");
+          // console.log("GPS >>>", GPS);
+          setImageLocation(
+            locationFormatter({
+              //@ts-ignore
+              latitude: GPS.get("GPSLatitude"),
+              //@ts-ignore
+              longitude: GPS.get("GPSLongitude"),
+            })
+          );
         }
       });
     }
