@@ -1,8 +1,12 @@
 import React from "react";
 import InputScreenLayout from "../../components/input-screen-layout/InputScreenLayout";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 function InputLocation() {
+  const location = useLocation();
+  const { latitude, longitude } = location.state;
+  console.log("latitude >>>", latitude);
+  console.log("longitude >>>", longitude);
   return (
     <>
       <InputScreenLayout

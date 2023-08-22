@@ -178,7 +178,18 @@ function Home() {
     // ? 1. 홍수로 판별된 사진인 경우
     if (floodResult) {
       return (
-        <Link to={"/location"} className="submitBtn active">
+        <Link
+          to={"/location"}
+          state={{
+            latitude: imageLocation
+              ? imageLocation.latitude
+              : deviceLocation?.latitude,
+            longitude: imageLocation
+              ? imageLocation.longitude
+              : deviceLocation?.longitude,
+          }}
+          className="submitBtn active"
+        >
           위치 입력
         </Link>
       );
