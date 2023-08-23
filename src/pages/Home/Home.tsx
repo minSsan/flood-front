@@ -237,6 +237,23 @@ function Home() {
                   }
                 }}
               />
+              <p
+                className="font12 fontSemiBold"
+                style={{
+                  display: "inline-block",
+                  marginTop: "0.625rem",
+                  marginLeft: "auto",
+                  textDecoration: "underline",
+                  color: "#86B0EE",
+                  cursor: "pointer",
+                }}
+                onClick={() => {
+                  setDateInfo(new Date());
+                  setIsModalOpen(false);
+                }}
+              >
+                현재 시간으로 입력하기
+              </p>
             </Modal>
           )}
 
@@ -308,7 +325,10 @@ function Home() {
                           </p>
 
                           {/* 촬영 시간 수정 버튼 */}
-                          <EditButton style={{ marginLeft: "0.188rem" }} />
+                          <EditButton
+                            text="수정하기"
+                            style={{ marginLeft: "0.188rem" }}
+                          />
                         </span>
                       </>
                     ) : (
@@ -324,11 +344,12 @@ function Home() {
                           style={{ color: "#F96A6A" }}
                         >
                           시간을 직접 입력해주세요.
-                          <EditButton
-                            style={{ marginLeft: "0.188rem" }}
-                            onClick={() => setIsModalOpen(true)}
-                          />
                         </span>
+                        <EditButton
+                          text="직접입력"
+                          style={{ marginLeft: "0.188rem" }}
+                          onClick={() => setIsModalOpen(true)}
+                        />
                       </>
                     )}
                   </div>

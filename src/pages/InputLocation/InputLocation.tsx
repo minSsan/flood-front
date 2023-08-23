@@ -56,7 +56,7 @@ function InputLocation() {
             render={render}
           >
             <Map
-              style={{ marginTop: "0.563rem" }}
+              style={{ marginTop: "1.5rem" }}
               onClick={handleMapClick}
               center={center}
               zoom={17}
