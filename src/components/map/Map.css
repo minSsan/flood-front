@@ -1,0 +1,11 @@
+#googleMap {
+  width: 100vw;
+  height: 23.438rem;
+}
+
+/** Tablet & PC */
+@media screen and (min-width: 767px) {
+  #googleMap {
+    width: 23.438rem;
+  }
+}

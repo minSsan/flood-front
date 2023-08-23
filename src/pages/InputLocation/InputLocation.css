@@ -1,0 +1,14 @@
+#inputLocationContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+#inputLocationWrapper {
+  padding: 2.875rem 0;
+  padding-bottom: 0;
+
+  width: 100%;
+  max-width: 281px;
+}

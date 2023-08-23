@@ -1,0 +1,16 @@
+#spinnerContainer {
+  width: 100vw;
+  height: 100vh;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#spinnerContainer img {
+  animation: rotate_image 5s linear infinite;
+  transform-origin: 50% 50%;
+
+  width: 3.75rem;
+  height: 3.75rem;
+}

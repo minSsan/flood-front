@@ -13,6 +13,12 @@ html {
   display: none;
 }
 
+@keyframes ratate_image {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
 /** fonts settings */
 @font-face {
   font-family: "PretendardLight";

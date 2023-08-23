@@ -5,7 +5,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { koKR } from "@mui/material/locale";
-import Result from "./pages/Result/Result";
+import Complete from "./pages/Complete/Complete";
 import { Routes, Route } from "react-router-dom";
 import InputLocation from "./pages/InputLocation/InputLocation";
 
@@ -25,7 +25,7 @@ function App() {
         <Routes>
           <Route index element={<Home />} />
           <Route path="/location" element={<InputLocation />} />
-          <Route path="/complete" element={<Result />} />
+          <Route path="/complete" element={<Complete />} />
         </Routes>
       </LocalizationProvider>
     </ThemeProvider>

@@ -3,8 +3,10 @@
   justify-content: center;
 
   padding: 2.875rem;
+
+  width: 17.563rem;
+  max-width: 375px;
 }
 
 #inputScreenWrapper {
-  width: 100%;
 }
