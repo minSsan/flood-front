@@ -1,4 +1,4 @@
-import React, { ReactElement } from "react";
+import React, { ReactElement, useCallback, useState } from "react";
 import InputScreenLayout from "../../components/input-screen-layout/InputScreenLayout";
 import { Link, useLocation } from "react-router-dom";
 import { Wrapper, Status } from "@googlemaps/react-wrapper";
@@ -6,6 +6,12 @@ import Spinner from "../../components/spinner/Spinner";
 import Map from "../../components/map/Map";
 import Layout from "../../components/Layout";
 import "./InputLocation.css";
+import MapMarker from "../../components/map-marker/MapMarker";
+
+interface Position {
+  lat: number;
+  lng: number;
+}
 
 const render = (status: Status): React.ReactElement => {
   if (status === Status.FAILURE) return <></>;
@@ -15,8 +21,23 @@ const render = (status: Status): React.ReactElement => {
 function InputLocation() {
   const location = useLocation();
   const { latitude, longitude } = location.state;
-  console.log("latitude >>>", latitude);
-  console.log("longitude >>>", longitude);
+
+  const [center, setCenter] = useState<Position>({
+    lat: latitude,
+    lng: longitude,
+  });
+
+  console.log(center);
+
+  const handleMapClick = useCallback((e: google.maps.MapMouseEvent) => {
+    if (e.latLng) {
+      setCenter({
+        lat: e.latLng.lat(),
+        lng: e.latLng.lng(),
+      });
+    }
+  }, []);
+
   return (
     <>
       <Layout>
@@ -36,9 +57,14 @@ function InputLocation() {
           >
             <Map
               style={{ marginTop: "0.563rem" }}
-              center={{ lat: latitude, lng: longitude }}
-              zoom={15}
-            />
+              onClick={handleMapClick}
+              center={center}
+              zoom={17}
+              mapTypeControl={false}
+              streetViewControl={false}
+            >
+              <MapMarker position={center} />
+            </Map>
           </Wrapper>
         </div>
 
