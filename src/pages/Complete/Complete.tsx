@@ -1,9 +1,9 @@
 import Layout from "../../components/Layout";
-import "./Result.css";
+import "./Complete.css";
 import CompleteLogo from "../../assets/images/complete-logo.svg";
 import HomeButton from "../../components/home-button/HomeButton";
 
-function Result() {
+function Complete() {
   return (
     <Layout isOverlap>
       <div id="resultContainer">
@@ -37,4 +37,4 @@ function Result() {
   );
 }
 
-export default Result;
+export default Complete;

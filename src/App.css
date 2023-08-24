@@ -5,14 +5,6 @@
   text-decoration: none;
 }
 
-html {
-  scroll-behavior: smooth;
-}
-
-::-webkit-scrollbar {
-  display: none;
-}
-
 /** fonts settings */
 @font-face {
   font-family: "PretendardLight";
@@ -37,6 +29,24 @@ html {
 @font-face {
   font-family: "PretendardExtraBold";
   src: url("../src/assets/fonts/Pretendard-ExtraBold.ttf");
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+::-webkit-scrollbar {
+  display: none;
+}
+
+input::placeholder {
+  color: #aaaaaa;
+}
+
+@keyframes ratate_image {
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 /** font styles */
@@ -143,12 +153,12 @@ button {
 
 /** text styles */
 .screenTitle {
-  font-family: "PretendardExtraBold";
+  font-family: "PretendardBold";
   font-size: 1.25rem;
 }
 
 .screenSmallTitle {
-  font-family: "PretendardBold";
+  font-family: "PretendardSemiBold";
   font-size: 1rem;
   color: #2e2e2e;
 }

@@ -6,9 +6,11 @@ import "./Header.css";
 const Header = forwardRef<HTMLDivElement>(
   (props, ref: ForwardedRef<HTMLDivElement>) => {
     return (
-      <div ref={ref} id="headerContainer">
-        <img src={Logo} id="logoImg" alt="" />
-      </div>
+      <Link to={"/"}>
+        <div ref={ref} id="headerContainer">
+          <img src={Logo} id="logoImg" alt="" />
+        </div>
+      </Link>
     );
   }
 );
