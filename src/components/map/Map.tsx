@@ -7,8 +7,13 @@ interface MapProps extends google.maps.MapOptions {
   children?: ReactNode;
 }
 
+export interface Position {
+  lat: number;
+  lng: number;
+}
+
 function Map({ onClick, style, children, ...options }: MapProps) {
-  const ref = useRef<HTMLDivElement>(document.createElement("div"));
+  const ref = useRef<HTMLDivElement>(null);
   const [map, setMap] = useState<google.maps.Map>();
 
   console.log("map rendered");
@@ -35,6 +40,9 @@ function Map({ onClick, style, children, ...options }: MapProps) {
           return React.cloneElement(child, { map });
         }
       })}
+      <h3 className="screenSubtitle" style={{ marginTop: "0.3rem" }}>
+        마커를 클릭하면 주소가 노출됩니다.
+      </h3>
     </>
   );
 }
