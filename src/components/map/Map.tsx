@@ -47,4 +47,4 @@ function Map({ onClick, style, children, ...options }: MapProps) {
   );
 }
 
-export default Map;
+export default React.memo(Map);

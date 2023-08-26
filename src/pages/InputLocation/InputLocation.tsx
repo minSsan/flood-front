@@ -31,7 +31,8 @@ function InputLocation() {
   });
 
   // * 사용자 입력 텍스트
-  const [inputText, setInputText] = useState<string>("");
+  //   const [inputText, setInputText] = useState<string>("");
+  const inputTextRef = useRef<HTMLInputElement>(null);
 
   // * google 지도 화면을 클릭할 때 실행되는 콜백함수
   const handleMapClick = useCallback((e: google.maps.MapMouseEvent) => {
@@ -47,9 +48,12 @@ function InputLocation() {
   useEffect(() => {
     return () => {
       console.log("center >>>", center);
-      console.log("input text >>>", inputText);
+      //   console.log("input text >>>", inputText);
+      console.log("input text ref >>>", inputTextRef.current?.value);
     };
   });
+
+  console.log(inputTextRef);
 
   return (
     <>
@@ -81,10 +85,11 @@ function InputLocation() {
           </Wrapper>
 
           <InputText
+            ref={inputTextRef}
             style={{ marginTop: "1.25rem" }}
             placeholder="(선택) 특이사항이 있으면 입력해주세요."
-            value={inputText}
-            onChange={(e) => setInputText(e.target.value)}
+            // value={inputText}
+            // onChange={(e) => setInputText(e.target.value)}
           />
         </div>
 
