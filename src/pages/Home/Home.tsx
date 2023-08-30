@@ -11,9 +11,9 @@ import EditButton from "../../components/edit-button/EditButton";
 import Modal from "../../components/modal/Modal";
 import { DateTimePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
-import { Link, NavLink } from "react-router-dom";
+import { Link } from "react-router-dom";
 import Layout from "../../components/Layout";
-import useCurrentLocation, { Location } from "../../hooks/useCurrentLocation";
+import { Location } from "../../hooks/useCurrentLocation";
 import { locationFormatter } from "../../utils/location-formatter";
 import { getCurrentLocation } from "../../utils/get-current-location";
 
@@ -37,21 +37,13 @@ function Home() {
 
   // ? 사진 촬영일 텍스트
   const [dateInfo, setDateInfo] = useState<Date | null>(null);
-  // ? 디바이스 위치 정보
-  const [deviceLocation, setDeviceLocation] = useState<Location | null>(null);
-  // const { location: deviceLocation, error: deviceLocationError } =
-  //   useCurrentLocation();
   // ? 현재 입력된 이미지의 위치 정보
   const [imageLocation, setImageLocation] = useState<Location | null>(null);
   // ? 위치 입력 스크린에 전달할 위치 정보
   const [locationInfo, setLocationInfo] = useState<Location | null>(null);
 
-  // ! useCurrentLocation을 비동기로 처리해서 위치 정보를 관리하는 방법?
-  // ? -> 그렇다면 굳이 얘를 custom hook으로 관리할 필요가 있을까?
+  // * 이미지가 새로 입력될 때마다 실시간 위치 갱신
   useEffect(() => {
-    // ! 1. useCurrentLocation 비동기 호출
-    // ! 2. imageLocation이 존재하면 그대로 그 값을 사용
-    // ! 2-1. imageLocation이 존재하지 않으면 useCurrentLocation 반환 값 사용
     if (!imageLocation) {
       getCurrentLocation()
         .then((res) => {
@@ -68,9 +60,6 @@ function Home() {
 
   // ! test
   console.log("rendered");
-  console.info("current location >>>", deviceLocation);
-  // console.info("location error >>>", deviceLocationError);
-  // console.info("imageLocation >>>", imageLocation);
   console.info("submit location >>>", locationInfo);
 
   // * 홍수 모델 실행 함수
