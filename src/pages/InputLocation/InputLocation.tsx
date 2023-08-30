@@ -69,7 +69,7 @@ function InputLocation() {
             </h3>
           </div>
           <Wrapper
-            apiKey={"AIzaSyCn8uyroZOIRRZxPeAmwAUYnt-z08X9KbY"}
+            apiKey={process.env.REACT_APP_GOOGLE_API_KEY!}
             render={render}
           >
             <Map
