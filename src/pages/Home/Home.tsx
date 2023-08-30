@@ -11,11 +11,11 @@ import EditButton from "../../components/edit-button/EditButton";
 import Modal from "../../components/modal/Modal";
 import { DateTimePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
-import InputScreenLayout from "../../components/input-screen-layout/InputScreenLayout";
-import { Link, NavLink } from "react-router-dom";
+import { Link } from "react-router-dom";
 import Layout from "../../components/Layout";
-import useCurrentLocation, { Location } from "../../hooks/useCurrentLocation";
+import { Location } from "../../hooks/useCurrentLocation";
 import { locationFormatter } from "../../utils/location-formatter";
+import { getCurrentLocation } from "../../utils/get-current-location";
 
 function Home() {
   // ? scroll ref - 스크롤 조작을 위해 사용
@@ -37,17 +37,30 @@ function Home() {
 
   // ? 사진 촬영일 텍스트
   const [dateInfo, setDateInfo] = useState<Date | null>(null);
-  // ? 디바이스 위치 정보
-  const { location: deviceLocation, error: deviceLocationError } =
-    useCurrentLocation();
   // ? 현재 입력된 이미지의 위치 정보
   const [imageLocation, setImageLocation] = useState<Location | null>(null);
+  // ? 위치 입력 스크린에 전달할 위치 정보
+  const [locationInfo, setLocationInfo] = useState<Location | null>(null);
+
+  // * 이미지가 새로 입력될 때마다 실시간 위치 갱신
+  useEffect(() => {
+    if (!imageLocation) {
+      getCurrentLocation()
+        .then((res) => {
+          setLocationInfo({
+            latitude: res.coords.latitude,
+            longitude: res.coords.longitude,
+          });
+        })
+        .catch((error) => {
+          console.error("[Geolocation error]", error);
+        });
+    }
+  }, [imageLocation]);
 
   // ! test
   console.log("rendered");
-  console.info("location >>> ", deviceLocation);
-  console.info("location error >>>", deviceLocationError);
-  console.info("imageLocation >>>", imageLocation);
+  console.info("submit location >>>", locationInfo);
 
   // * 홍수 모델 실행 함수
   const executeModel = useCallback(() => {
@@ -177,21 +190,32 @@ function Home() {
     // ? 홍수 분석을 완료한 경우
     // ? 1. 홍수로 판별된 사진인 경우
     if (floodResult) {
+      if (locationInfo) {
+        return (
+          <Link
+            to={"/location"}
+            state={{
+              ...locationInfo,
+            }}
+            className="submitBtn active"
+          >
+            위치 입력
+          </Link>
+        );
+      }
+
+      // TODO: 위치정보 불러올 때까지 대기 | 현재처럼 조건부 렌더링
       return (
-        <Link
-          to={"/location"}
-          state={{
-            latitude: imageLocation
-              ? imageLocation.latitude
-              : deviceLocation?.latitude,
-            longitude: imageLocation
-              ? imageLocation.longitude
-              : deviceLocation?.longitude,
-          }}
+        <button
           className="submitBtn active"
+          onClick={() =>
+            alert(
+              "위치 정보 불러오기에 실패했습니다. \n잠시후에 다시 시도해주세요."
+            )
+          }
         >
           위치 입력
-        </Link>
+        </button>
       );
     }
     // ? 2. 홍수가 아니라고 판별된 사진인 경우
@@ -206,7 +230,7 @@ function Home() {
         </button>
       );
     }
-  }, [isAnalyzed, floodResult, inputImage, dateInfo]);
+  }, [isAnalyzed, floodResult, inputImage, dateInfo, locationInfo]);
 
   // * 분석 결과 노출시 스크롤을 맨 아래로 이동
   useEffect(() => {
