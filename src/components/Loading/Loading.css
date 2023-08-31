@@ -1,0 +1,20 @@
+#loadingContainer {
+  height: 100vh;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#loadingWrapper {
+  text-align: center;
+}
+
+#loadingWrapper > img {
+  width: 6.25rem;
+  height: 6.25rem;
+}
+
+#loadingText {
+  color: #6b6b6b;
+}
