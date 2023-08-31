@@ -19,6 +19,7 @@ const InputText = forwardRef<HTMLInputElement, InputTextProps>(
     );
     return (
       <input
+        ref={ref}
         name={name}
         id={id}
         type="text"

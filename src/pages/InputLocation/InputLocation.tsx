@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Wrapper, Status } from "@googlemaps/react-wrapper";
 import Spinner from "../../components/spinner/Spinner";
 import Map, { Position } from "../../components/map/Map";
@@ -31,8 +31,10 @@ function InputLocation() {
   });
 
   // * 사용자 입력 텍스트
-  //   const [inputText, setInputText] = useState<string>("");
   const inputTextRef = useRef<HTMLInputElement>(null);
+
+  // * navigate
+  const navigate = useNavigate();
 
   // * google 지도 화면을 클릭할 때 실행되는 콜백함수
   const handleMapClick = useCallback((e: google.maps.MapMouseEvent) => {
@@ -44,16 +46,21 @@ function InputLocation() {
     }
   }, []);
 
+  // * 접수하기 버튼 클릭할 때 실행되는 함수
+  const handleSubmit = useCallback(() => {
+    // TODO: 백엔드에 입력 정보 업로드
+
+    // ! test
+    console.log(inputTextRef.current?.value);
+    navigate("/complete");
+  }, []);
+
   // ! test
   useEffect(() => {
     return () => {
       console.log("center >>>", center);
-      //   console.log("input text >>>", inputText);
-      console.log("input text ref >>>", inputTextRef.current?.value);
     };
   });
-
-  console.log(inputTextRef);
 
   return (
     <>
@@ -88,15 +95,17 @@ function InputLocation() {
             ref={inputTextRef}
             style={{ marginTop: "1.25rem" }}
             placeholder="(선택) 특이사항이 있으면 입력해주세요."
-            // value={inputText}
-            // onChange={(e) => setInputText(e.target.value)}
           />
         </div>
 
         <div className="submitBtnContainer">
-          <Link to={"/complete"} className="submitBtn active">
+          <button
+            type="submit"
+            className="submitBtn active"
+            onClick={handleSubmit}
+          >
             접수하기
-          </Link>
+          </button>
         </div>
       </Layout>
     </>
