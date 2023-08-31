@@ -21,6 +21,8 @@ import Loading from "../../components/Loading/Loading";
 function Home() {
   // ? 로딩 화면을 띄우기 위한 state 값
   const [loading, setLoading] = useState<boolean>(true);
+  // ? 위치 정보를 위한 로딩인지 확인 - 로딩 text 조건부 렌더링에 사용
+  const [isLocationLoading, setIsLocationLoading] = useState<boolean>(true);
 
   // ? scroll ref - 스크롤 조작을 위해 사용
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -72,6 +74,11 @@ function Home() {
 
   // * 홍수 모델 실행 함수
   const executeModel = useCallback(() => {
+    // - 위치 정보 로딩 여부를 false로 설정
+    setIsLocationLoading(false);
+    // - 로딩 화면 띄우기
+    setLoading(true);
+    // ? 홍수 분석 시작
     getFloodResult(imagePreviewRef.current!)
       .then((res) => {
         if (!res) {
@@ -84,8 +91,19 @@ function Home() {
         // ? 홍수 사진이 아닐 경우에는 결괏값을 기록하지 않는다.
         if (res.floodLevel === "normal") return;
         setFloodResult(res);
+
+        // - 로딩 화면 제거
+        setLoading(false);
+        // - 위치 정보 로딩 여부를 true로 원상복귀
+        setIsLocationLoading(true);
       })
-      .catch((err) => console.error(err));
+      .catch((err) => {
+        console.error(err);
+        // - 로딩 화면 제거
+        setLoading(false);
+        // - 위치 정보 로딩 여부를 true로 원상복귀
+        setIsLocationLoading(true);
+      });
   }, []);
 
   // * 이미지 삭제 버튼 클릭시 실행되는 함수
@@ -248,7 +266,9 @@ function Home() {
   return (
     <>
       {loading ? (
-        <Loading text="위치 정보를 불러오고 있습니다." />
+        <Loading
+          text={isLocationLoading ? `현재 위치 정보를 불러오고 있습니다.` : ""}
+        />
       ) : (
         <Layout>
           <div ref={scrollRef} className="homeContainer">
