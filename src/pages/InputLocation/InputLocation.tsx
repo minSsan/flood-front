@@ -22,15 +22,15 @@ const render = (status: Status): React.ReactElement => {
 function InputLocation() {
   // * Link 태그의 state param으로 전달받은 latitude, longitude 값 추출
   const location = useLocation();
-  const { latitude, longitude } = location.state;
+  const { latitude, longitude, inputImage, floodResult } = location.state;
 
-  // * 현재 지도에서 선택된 위치 값
+  // ! 현재 지도에서 선택된 위치 값
   const [center, setCenter] = useState<Position>({
     lat: latitude,
     lng: longitude,
   });
 
-  // * 사용자 입력 텍스트
+  // ! 사용자 입력 텍스트
   const inputTextRef = useRef<HTMLInputElement>(null);
 
   // * navigate
@@ -49,18 +49,15 @@ function InputLocation() {
   // * 접수하기 버튼 클릭할 때 실행되는 함수
   const handleSubmit = useCallback(() => {
     // TODO: 백엔드에 입력 정보 업로드
+    // ! 아래 정보를 백엔드 서버에 업로드 한다.
+    console.log({
+      location: center,
+      image: inputImage,
+      result: floodResult,
+    });
 
-    // ! test
-    console.log(inputTextRef.current?.value);
     navigate("/complete");
   }, []);
-
-  // ! test
-  useEffect(() => {
-    return () => {
-      console.log("center >>>", center);
-    };
-  });
 
   return (
     <>
