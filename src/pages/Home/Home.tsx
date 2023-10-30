@@ -31,12 +31,12 @@ function Home() {
   // ? image preview tag
   const imagePreviewRef = useRef<HTMLImageElement>(null);
 
-  // ? 사용자가 입력한 이미지를 base64 형식으로 저장
+  // ! 사용자가 입력한 이미지를 base64 형식으로 저장
   // -> base64 형식 변환은 onChange 내에서 FileReader로 처리)
   const [inputImage, setInputImage] = useState<string | null>(null);
   // ? 홍수 이미지 분석 여부
   const [isAnalyzed, setIsAnalyzed] = useState<boolean>(false);
-  // ? 홍수 분석 결과 텍스트
+  // ! 홍수 분석 결과 텍스트
   const [floodResult, setFloodResult] = useState<FloodResult | null>(null);
   // ? 모달창 열림 / 닫힘 여부
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
@@ -89,9 +89,12 @@ function Home() {
         setIsAnalyzed(true);
 
         // ? 홍수 사진이 아닐 경우에는 결괏값을 기록하지 않는다.
-        if (res.floodLevel === "normal") return;
-        setFloodResult(res);
+        if (res.floodLevel === "normal") {
+          setLoading(false);
+          return;
+        }
 
+        setFloodResult(res);
         // - 로딩 화면 제거
         setLoading(false);
         // - 위치 정보 로딩 여부를 true로 원상복귀
@@ -222,6 +225,8 @@ function Home() {
             to={"/location"}
             state={{
               ...locationInfo,
+              inputImage,
+              floodResult,
             }}
             className="submitBtn active"
           >
